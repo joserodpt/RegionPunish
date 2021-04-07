@@ -1,20 +1,11 @@
-package josegamerpt.regionpunish.classes;
+package josegamerpt.regionpunish.utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
+
+import java.util.*;
 
 /**
  * This class is a region/cuboid from one location to another. It can be used
@@ -26,7 +17,7 @@ public class SelectionCube implements Iterable<Block>, Cloneable, ConfigurationS
     protected final String worldName;
     protected final int x1, y1, z1;
     protected final int x2, y2, z2;
-    protected int totalBlocks = 0;
+    protected int totalBlocks;
 
     /**
      * Construct a Cuboid given two Location objects which represent any two corners
@@ -137,7 +128,7 @@ public class SelectionCube implements Iterable<Block>, Cloneable, ConfigurationS
 
     @Override
     public Map<String, Object> serialize() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("worldName", this.worldName);
         map.put("x1", this.x1);
         map.put("y1", this.y1);
@@ -175,7 +166,7 @@ public class SelectionCube implements Iterable<Block>, Cloneable, ConfigurationS
      */
     public List<Block> getBlocks() {
         Iterator<Block> blockI = this.iterator();
-        List<Block> copy = new ArrayList<Block>();
+        List<Block> copy = new ArrayList<>();
         while (blockI.hasNext())
             copy.add(blockI.next());
         return copy;
@@ -184,7 +175,7 @@ public class SelectionCube implements Iterable<Block>, Cloneable, ConfigurationS
     public int getTotalBlocks() {
         int tot = 0;
         for (Block b : getBlocks()) {
-            if (b.isEmpty() == false) {
+            if (!b.isEmpty()) {
                 tot++;
             }
         }
@@ -608,7 +599,7 @@ public class SelectionCube implements Iterable<Block>, Cloneable, ConfigurationS
      * @return A list of Chunk objects
      */
     public List<Chunk> getChunks() {
-        List<Chunk> res = new ArrayList<Chunk>();
+        List<Chunk> res = new ArrayList<>();
 
         World w = this.getWorld();
         int x1 = this.getLowerX() & ~0xf;
@@ -634,8 +625,8 @@ public class SelectionCube implements Iterable<Block>, Cloneable, ConfigurationS
 
     @Override
     public String toString() {
-        return new String("Cuboid: " + this.worldName + "," + this.x1 + "," + this.y1 + "," + this.z1 + "=>" + this.x2
-                + "," + this.y2 + "," + this.z2);
+        return "Cuboid: " + this.worldName + "," + this.x1 + "," + this.y1 + "," + this.z1 + "=>" + this.x2
+                + "," + this.y2 + "," + this.z2;
     }
 
     public int getTotalVolume() {

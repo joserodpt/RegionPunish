@@ -2,13 +2,7 @@ name: RegionPunish
 version: ${project.version}
 main: josegamerpt.regionpunish.RegionPunish
 authors: [JoseGamer_PT]
+depend:
+  - WorldEdit
 description: Easily punish players that are in a selected region.
 website: https://www.spigotmc.org/members/josegamer_pt.40267/
-
-commands:
-  regionpunish:
-    description: Main command for RegionPunish.
-    aliases:
-      - rp
-      - regpun
-      - regp

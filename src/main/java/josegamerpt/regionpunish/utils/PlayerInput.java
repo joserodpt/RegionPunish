@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import josegamerpt.regionpunish.RegionPunish;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +21,7 @@ public class PlayerInput implements Listener {
     private UUID uuid;
 
     private ArrayList<String> texts = Text
-            .addColor(Arrays.asList("&l&9Type in chat your input", "&fType &4cancel &fto cancel"));
+            .color(Arrays.asList("&l&9Type in chat your input", "&fType &4cancel &fto cancel"));
 
     private InputRunnable runGo;
     private InputRunnable runCancel;
@@ -39,7 +38,7 @@ public class PlayerInput implements Listener {
             public void run() {
                 p.sendTitle(texts.get(0), texts.get(1));
             }
-        }.runTaskTimer(RegionPunish.pl, 0L, (long) 20);
+        }.runTaskTimer(RegionPunish.pl, 0L, 20);
 
         this.register();
     }
@@ -52,9 +51,9 @@ public class PlayerInput implements Listener {
         this.runCancel = cancel;
         this.taskId = new BukkitRunnable() {
             public void run() {
-                p.sendTitle(Text.addColor(titl1), Text.addColor(titl2));
+                p.sendTitle(Text.color(titl1), Text.color(titl2));
             }
-        }.runTaskTimer(RegionPunish.pl, 0L, (long) 20);
+        }.runTaskTimer(RegionPunish.pl, 0L, 20);
 
         this.register();
     }
@@ -67,34 +66,24 @@ public class PlayerInput implements Listener {
                 UUID uuid = event.getPlayer().getUniqueId();
                 if (inputs.containsKey(uuid)) {
                     PlayerInput current = inputs.get(uuid);
-                    if (current.inputMode == true) {
+                    if (current.inputMode) {
                         event.setCancelled(true);
                         try {
                             if (input.equalsIgnoreCase("cancel")) {
                                 event.getPlayer().sendMessage("Input canceled.");
                                 current.taskId.cancel();
                                 event.getPlayer().sendTitle("", "");
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(RegionPunish.pl, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        current.runCancel.run(input);
-                                    }
-                                }, 3);
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(RegionPunish.pl, () -> current.runCancel.run(input), 3);
                                 current.unregister();
                                 return;
                             }
 
                             current.taskId.cancel();
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(RegionPunish.pl, new Runnable() {
-                                @Override
-                                public void run() {
-                                    current.runGo.run(input);
-                                }
-                            }, 3);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(RegionPunish.pl, () -> current.runGo.run(input), 3);
                             event.getPlayer().sendTitle("", "");
                             current.unregister();
                         } catch (Exception e) {
-                            event.getPlayer().sendMessage("§cAn error ocourred. Contact JoseGamer_PT on spigotmc.org");
+                            event.getPlayer().sendMessage("§cAn error occurred. Contact JoseGamer_PT on spigotmc.org");
                             e.printStackTrace();
                         }
                     }
@@ -114,6 +103,6 @@ public class PlayerInput implements Listener {
 
     @FunctionalInterface
     public interface InputRunnable {
-        public void run(String input);
+        void run(String input);
     }
 }
